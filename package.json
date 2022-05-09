@@ -9,6 +9,10 @@
   "bin": {
     "playstore-stats": "./cli.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:satyajiit/google-playstore-stats-viewer.git"
+  },
   "keywords": [
     "playstore",
     "statistics",
