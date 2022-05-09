@@ -77,3 +77,8 @@ What are the possible usage of this package?
 ### Do more
 Modify the source to support more methods like reviews, crashes and more.
 https://support.google.com/googleplay/android-developer/?p=stats_export
+
+This project uses:
+- [google-cloud/storage](https://www.npmjs.com/package/@google-cloud/storage)
+- [fast-csv/parse](https://www.npmjs.com/package/@fast-csv/parse)
+- [yargs](https://www.npmjs.com/package/vargs)
