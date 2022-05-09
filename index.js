@@ -130,31 +130,36 @@ const getAppStats = async ({
   projectID,
   bucketName
 }) => {
-  const keyFile = JSON.parse(await readFilePromise(keyFilePath));
-  const authenticatedStorageObj = getAuthenticatedStorage(keyFile, projectID);
+  try {
+    const keyFile = JSON.parse(await readFilePromise(keyFilePath));
+    const authenticatedStorageObj = getAuthenticatedStorage(keyFile, projectID);
 
-  const [files] = await authenticatedStorageObj.bucket(bucketName).getFiles({
-    prefix: `stats/installs/installs_${packageName}_`
-  });
+    const [files] = await authenticatedStorageObj.bucket(bucketName).getFiles({
+      prefix: `stats/installs/installs_${packageName}_`
+    });
 
-  //Create working dir, if not exist
-  if (!fs.existsSync(workingDir + packageName))
-    fs.mkdirSync(workingDir + packageName, { recursive: true });
+    //Create working dir, if not exist
+    if (!fs.existsSync(workingDir + packageName))
+      fs.mkdirSync(workingDir + packageName, { recursive: true });
 
-  //downloads all required csv files - overview files,
-  //Other possible files can be https://support.google.com/googleplay/android-developer/?p=stats_export ,
-  //check "Commands and file formats for aggregated reports"
-  const cleanedArrayOfFileNames = await downloadOverviewCsvFiles({
-    storage: authenticatedStorageObj,
-    files: files,
-    packageName: packageName,
-    bucketName: bucketName
-  });
+    //downloads all required csv files - overview files,
+    //Other possible files can be https://support.google.com/googleplay/android-developer/?p=stats_export ,
+    //check "Commands and file formats for aggregated reports"
+    const cleanedArrayOfFileNames = await downloadOverviewCsvFiles({
+      storage: authenticatedStorageObj,
+      files: files,
+      packageName: packageName,
+      bucketName: bucketName
+    });
 
-  return findSumTotalOfValues({
-    cleanedArrayWithRequiredFileNames: cleanedArrayOfFileNames,
-    packageName: packageName
-  });
+    return findSumTotalOfValues({
+      cleanedArrayWithRequiredFileNames: cleanedArrayOfFileNames,
+      packageName: packageName
+    });
+  } catch (e) {
+    throw e
+  }
+
 };
 
 const getLocalFileName = path => path.substring(path.lastIndexOf("/"));
