@@ -2,6 +2,25 @@
 
 > View basic stats like installs/downloads, uninstall, active users events
 
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-YES-blueviolet.svg)](#)
+[![GPLv3 license](https://img.shields.io/badge/License-MIT-red.svg)](LICENSE)
+[![Generic badge](https://img.shields.io/badge/Stable-YES-<COLOR>.svg)](#)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](#)
+
+[![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](#)
+[![forthebadge](https://forthebadge.com/images/badges/makes-people-smile.svg)](#)
+[![forthebadge](https://forthebadge.com/images/badges/powered-by-electricity.svg)](#)
+[![forthebadge](https://forthebadge.com/images/badges/ages-12.svg)](#)
+
+
+
+#### SUPPORT THE WORK & DEV
+
+[![GitHub stars](https://img.shields.io/github/forks/satyajiit/google-playstore-stats-viewer?style=social)](https://github.com/satyajiit/google-playstore-stats-viewer/network) &nbsp;
+[![GitHub stars](https://img.shields.io/github/stars/satyajiit/google-playstore-stats-viewer?style=social)](https://github.com/satyajiit/google-playstore-stats-viewer/stargazers)
+&nbsp;
+[![GitHub followers](https://img.shields.io/github/followers/satyajiit?style=social&label=Follow&maxAge=2592000)](https://github.com/satyajiit?tab=followers)
+
 ## Authentication
 
 Steps to get your service account file from Google Cloud Platform
