@@ -2,11 +2,17 @@
 
 > View basic stats like installs/downloads, uninstall, active users events
 
+
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-YES-blueviolet.svg)](#)
 [![GPLv3 license](https://img.shields.io/badge/License-MIT-red.svg)](LICENSE)
 [![Generic badge](https://img.shields.io/badge/Stable-YES-<COLOR>.svg)](#)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](#)
+[![npm](https://img.shields.io/npm/v/google-playstore-stats-viewer/latest)](https://www.npmjs.com/package/google-playstore-stats-viewer)
 
+[![forthebadge](https://forthebadge.com/images/badges/0-percent-optimized.svg)](https://forthebadge.com)
+[![forthebadge](https://forthebadge.com/images/badges/contains-17-coffee-cups.svg)](https://forthebadge.com)
+[![forthebadge](https://forthebadge.com/images/badges/powered-by-black-magic.svg)](https://forthebadge.com)
+[![forthebadge](https://forthebadge.com/images/badges/uses-js.svg)](https://forthebadge.com)
 [![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](#)
 [![forthebadge](https://forthebadge.com/images/badges/makes-people-smile.svg)](#)
 [![forthebadge](https://forthebadge.com/images/badges/powered-by-electricity.svg)](#)
