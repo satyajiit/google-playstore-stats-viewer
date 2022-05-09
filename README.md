@@ -72,3 +72,8 @@ What are the possible usage of this package?
 - Create API based, stats fetch
 - When you have multiple apps hosted on playstore
 - Integration with custom dashboard
+
+
+### Do more
+Modify the source to support more methods like reviews, crashes and more.
+https://support.google.com/googleplay/android-developer/?p=stats_export
