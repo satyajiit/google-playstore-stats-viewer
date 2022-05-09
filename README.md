@@ -89,6 +89,17 @@ try {
 }
 ```
 
+output (sample)
+
+```javascript
+{
+  currentlyActiveDevices: 344,
+  totalInstallCountByUser: 1051,
+  totalUninstallCountByUser: 780,
+  totalInstallEventsDetected: 117276,
+  totalUninstallEventsDetected: 831
+}
+```
 
 ## Use cases
 
