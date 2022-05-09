@@ -1,0 +1,37 @@
+{
+  "name": "google-playstore-stats-viewer",
+  "version": "1.0.0",
+  "description": "View your app basic statistics like installs, uninstalls and other basic events -> https://support.google.com/googleplay/android-developer/?p=stats_export",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "playstore-stats": "./cli.js"
+  },
+  "keywords": [
+    "playstore",
+    "statistics",
+    "reports",
+    "installs",
+    "uninstalls",
+    "googlestore",
+    "downloads",
+    "reporting"
+  ],
+  "author": "Satyajit Pradhan",
+  "license": "MIT",
+  "dependencies": {
+    "yargs": "^13.2.2",
+    "@fast-csv/parse": "^4.3.6",
+    "@google-cloud/storage": "^5.19.4"
+  },
+  "devDependencies": {
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-config-prettier": "^2.7.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^6.0.2",
+    "eslint-plugin-react": "^7.4.0",
+    "prettier": "1.16.4"
+  }
+}
