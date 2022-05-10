@@ -7,19 +7,16 @@ const util = require("util");
 const readFilePromise = util.promisify(fs.readFile);
 
 module.exports = class PackageUtils {
+  async createAuthenticatedStorageObject({ keyPath, projectID }) {
+    if (this.authenticatedStorageObj) return; //Ignore if already initialised.
+    const keyFile = JSON.parse(await readFilePromise(keyPath));
+    return (this.authenticatedStorageObj = this.getAuthenticatedStorage({
+      key: keyFile,
+      projectID: projectID
+    }));
+  }
 
-    async createAuthenticatedStorageObject({keyPath, projectID}) {
-        if (this.authenticatedStorageObj) return; //Ignore if already initialised.
-        const keyFile = JSON.parse(
-            await readFilePromise(keyPath)
-        );
-        return this.authenticatedStorageObj = this.getAuthenticatedStorage({
-            key: keyFile,
-            projectID: projectID
-        });
-    }
-
-  getAuthenticatedStorage = ({key, projectID}) =>
+  getAuthenticatedStorage = ({ key, projectID }) =>
     new Storage({
       scopes: "https://www.googleapis.com/auth/devstorage.read_only",
       credentials: {
@@ -81,13 +78,10 @@ module.exports = class PackageUtils {
 
   getWorkingDir = () => workingDir;
 
-  getCorrectFiles = ({buketName, packageName, type = "installs"}) => this.authenticatedStorageObj
-      .bucket(buketName)
-      .getFiles({
-          prefix: `stats/${type}/${type}_${
-              packageName
-          }_`
-      });
+  getCorrectFiles = ({ buketName, packageName, type = "installs" }) =>
+    this.authenticatedStorageObj.bucket(buketName).getFiles({
+      prefix: `stats/${type}/${type}_${packageName}_`
+    });
 
   downloadCsvFiles = async ({
     bucketName,
@@ -107,8 +101,7 @@ module.exports = class PackageUtils {
             .bucket(bucketName)
             .file(file.name)
             .download({
-              destination:
-                targetLocation + getLocalFileName(file.name)
+              destination: targetLocation + getLocalFileName(file.name)
             })
         );
         cleanedArrayOfRequiredFileNames.push(file.name);

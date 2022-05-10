@@ -1,7 +1,7 @@
 const fs = require("fs");
 const InputParamsModel = require("./models/InputParamsModel");
 const PackageUtils = require("./package_utils");
-const Dimensions = require("./enums/Dimensions")
+const Dimensions = require("./enums/Dimensions");
 
 module.exports = class GooglePlayStoreStatsViewer {
   /**
@@ -32,7 +32,6 @@ module.exports = class GooglePlayStoreStatsViewer {
     //For more: https://support.google.com/googleplay/android-developer/?p=stats_export , check "supported dimensions"
     //This is just being used as a ENUM , lol
     this.Dimensions = Dimensions;
-
   }
 
   //change/update package name, subsequent calls will use the new packageID
@@ -42,10 +41,16 @@ module.exports = class GooglePlayStoreStatsViewer {
 
   async getAppStats() {
     try {
-      await this.packageUtils.createAuthenticatedStorageObject({keyPath: this.inputParamsModel.keyFilePath, projectID: this.inputParamsModel.projectID});
+      await this.packageUtils.createAuthenticatedStorageObject({
+        keyPath: this.inputParamsModel.keyFilePath,
+        projectID: this.inputParamsModel.projectID
+      });
 
       if (!this.files || this.files.length < 1)
-       [this.files] = await this.packageUtils.getCorrectFiles({buketName: this.inputParamsModel.bucketName, packageName: this.inputParamsModel.packageName})
+        [this.files] = await this.packageUtils.getCorrectFiles({
+          buketName: this.inputParamsModel.bucketName,
+          packageName: this.inputParamsModel.packageName
+        });
 
       //Create working dir, if not exist
       if (
@@ -60,17 +65,14 @@ module.exports = class GooglePlayStoreStatsViewer {
           }
         );
 
-
       //downloads all required csv files - overview files,
       //Other possible files can be https://support.google.com/googleplay/android-developer/?p=stats_export ,
       //check "Commands and file formats for aggregated reports"
-      const cleanedArrayOfFileNames = await this.packageUtils.downloadCsvFiles(
-        {
-          bucketName: this.inputParamsModel.bucketName,
-          packageName: this.inputParamsModel.packageName,
-          files: this.files
-        }
-      );
+      const cleanedArrayOfFileNames = await this.packageUtils.downloadCsvFiles({
+        bucketName: this.inputParamsModel.bucketName,
+        packageName: this.inputParamsModel.packageName,
+        files: this.files
+      });
 
       return this.packageUtils.findSumTotalOfValues({
         cleanedArrayWithRequiredFileNames: cleanedArrayOfFileNames,
@@ -87,8 +89,7 @@ module.exports = class GooglePlayStoreStatsViewer {
    * @param targetLocation - Target directory, where the files will be downloaded
    * @returns {Promise<*>} - Array of downloaded file names
    */
-  async downloadAppStats({dimension, targetLocation}) {
-
+  async downloadAppStats({ dimension, targetLocation }) {
     try {
       await this.packageUtils.createAuthenticatedStorageObject({
         keyPath: this.inputParamsModel.keyFilePath,
@@ -100,38 +101,28 @@ module.exports = class GooglePlayStoreStatsViewer {
         [this.files] = await this.packageUtils.getCorrectFiles({
           buketName: this.inputParamsModel.bucketName,
           packageName: this.inputParamsModel.packageName
-        })
+        });
 
       //Create working dir, if not exist
       if (
-          !fs.existsSync(
-              targetLocation + "/" + this.inputParamsModel.packageName
-          )
+        !fs.existsSync(targetLocation + "/" + this.inputParamsModel.packageName)
       )
-        fs.mkdirSync(
-            targetLocation + "/" + this.inputParamsModel.packageName,
-            {
-              recursive: true
-            }
-        );
+        fs.mkdirSync(targetLocation + "/" + this.inputParamsModel.packageName, {
+          recursive: true
+        });
 
-      return await this.packageUtils.downloadCsvFiles(
-          {
-            files: this.files,
-            packageName: this.inputParamsModel.packageName,
-            bucketName: this.inputParamsModel.bucketName,
-            dimension: dimension,
-            targetLocation: targetLocation + "/" + this.inputParamsModel.packageName
-          }
-      );
+      return await this.packageUtils.downloadCsvFiles({
+        files: this.files,
+        packageName: this.inputParamsModel.packageName,
+        bucketName: this.inputParamsModel.bucketName,
+        dimension: dimension,
+        targetLocation: targetLocation + "/" + this.inputParamsModel.packageName
+      });
     } catch (e) {
-      throw e
+      throw e;
     }
-
   }
-
 };
-
 
 /**
  * @deprecated Since version 1.0.2 Will be deleted in version 1.0.5 Use class instead.
