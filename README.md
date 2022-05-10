@@ -4,15 +4,15 @@
 
 
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-YES-blueviolet.svg)](#)
-[![GPLv3 license](https://img.shields.io/badge/License-MIT-red.svg)](LICENSE)
+[![GPLv3 license](https://img.shields.io/badge/License-MIT-red.svg)](#)
 [![Generic badge](https://img.shields.io/badge/Stable-YES-<COLOR>.svg)](#)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](#)
 [![npm](https://img.shields.io/npm/v/google-playstore-stats-viewer/latest)](https://www.npmjs.com/package/google-playstore-stats-viewer)
 
-[![forthebadge](https://forthebadge.com/images/badges/0-percent-optimized.svg)](https://forthebadge.com)
-[![forthebadge](https://forthebadge.com/images/badges/contains-17-coffee-cups.svg)](https://forthebadge.com)
-[![forthebadge](https://forthebadge.com/images/badges/powered-by-black-magic.svg)](https://forthebadge.com)
-[![forthebadge](https://forthebadge.com/images/badges/uses-js.svg)](https://forthebadge.com)
+[![forthebadge](https://forthebadge.com/images/badges/0-percent-optimized.svg)](#)
+[![forthebadge](https://forthebadge.com/images/badges/contains-17-coffee-cups.svg)](#)
+[![forthebadge](https://forthebadge.com/images/badges/powered-by-black-magic.svg)](#)
+[![forthebadge](https://forthebadge.com/images/badges/uses-js.svg)](#)
 [![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](#)
 [![forthebadge](https://forthebadge.com/images/badges/makes-people-smile.svg)](#)
 [![forthebadge](https://forthebadge.com/images/badges/powered-by-electricity.svg)](#)
@@ -62,7 +62,7 @@ yarn global add google-playstore-stats-viewer
 
 ## Usage
 
-Use the CLI
+Using the CLI
 
 ```bash
 playstore-stats \
@@ -72,24 +72,25 @@ playstore-stats \
     -b=pubsite_prod_xxxx
 ```
 
-or the JavaScript API
+or the JavaScript API to fetch stats
 
 ```javascript
-const playstore = require('google-playstore-stats-viewer');
+const GooglePlayStoreStatsViewer = require('google-playstore-stats-viewer');
 
 try {
-    const data = await playstore.appBasicStats({
+    const statsViewer = new GooglePlayStoreStatsViewer({
         keyFilePath: "PATH_TO_KEY_FILE",
         packageName: "com.example.app",
         projectID: "GCP_PROJECT_ID",
-        bucketName: "pubsite_prod_xxxx"});
+        bucketName: "pubsite_prod_xxxx"})
+    const data = await statsViewer.getAppStats();
     console.log(data);
 } catch (e) {
   console.log(e);
 }
 ```
 
-output (sample)
+Output (sample)
 
 ```javascript
 {

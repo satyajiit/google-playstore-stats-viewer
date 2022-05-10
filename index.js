@@ -1,6 +1,5 @@
 const fs = require("fs");
 const util = require("util");
-const readFilePromise = util.promisify(fs.readFile);
 const InputParamsModel = require("./models/InputParamsModel");
 const PackageUtils = require("./package_utils");
 
@@ -30,24 +29,13 @@ module.exports = class GooglePlayStoreStatsViewer {
     this.packageUtils = new PackageUtils();
   }
 
-  async createAuthenticatedStorageObject() {
-    if (this.authenticatedStorageObj) return; //Ignore if already initialised.
-    const keyFile = JSON.parse(
-      await readFilePromise(this.inputParamsModel.keyFilePath)
-    );
-    this.authenticatedStorageObj = this.packageUtils.getAuthenticatedStorage(
-      keyFile,
-      this.inputParamsModel.projectID
-    );
-  }
-
   //change/update package name, subsequent calls will use the new packageID
   setPackageName({ packageName }) {
     this.inputParamsModel.packageName = packageName;
   }
 
   async getAppStats() {
-    await this.createAuthenticatedStorageObject();
+    this.authenticatedStorageObj = await this.packageUtils.createAuthenticatedStorageObject({keyPath: this.inputParamsModel.keyFilePath, projectID: this.inputParamsModel.projectID});
     try {
       const [files] = await this.authenticatedStorageObj
         .bucket(this.inputParamsModel.bucketName)
@@ -75,7 +63,6 @@ module.exports = class GooglePlayStoreStatsViewer {
       //check "Commands and file formats for aggregated reports"
       const cleanedArrayOfFileNames = await this.packageUtils.downloadOverviewCsvFiles(
         {
-          storage: this.authenticatedStorageObj,
           files: files,
           packageName: this.inputParamsModel.packageName,
           bucketName: this.inputParamsModel.bucketName

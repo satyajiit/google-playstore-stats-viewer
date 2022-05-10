@@ -3,9 +3,23 @@ const path = require("path");
 const csv = require("@fast-csv/parse");
 const workingDir = "tempCsvFiles/";
 const { Storage } = require("@google-cloud/storage");
+const util = require("util");
+const readFilePromise = util.promisify(fs.readFile);
 
 module.exports = class PackageUtils {
-  getAuthenticatedStorage = (key, projectID) =>
+
+    async createAuthenticatedStorageObject({keyPath, projectID}) {
+        if (this.authenticatedStorageObj) return this.authenticatedStorageObj; //Ignore if already initialised.
+        const keyFile = JSON.parse(
+            await readFilePromise(keyPath)
+        );
+        return this.authenticatedStorageObj = this.getAuthenticatedStorage({
+            key: keyFile,
+            projectID: projectID
+        });
+    }
+
+  getAuthenticatedStorage = ({key, projectID}) =>
     new Storage({
       scopes: "https://www.googleapis.com/auth/devstorage.read_only",
       credentials: {
@@ -68,7 +82,6 @@ module.exports = class PackageUtils {
   getWorkingDir = () => workingDir;
 
   downloadOverviewCsvFiles = async ({
-    storage,
     bucketName,
     packageName,
     files
@@ -80,7 +93,7 @@ module.exports = class PackageUtils {
       let file = files[i];
       if (file.name.endsWith("_overview.csv")) {
         downloadPromise.push(
-          storage
+          this.authenticatedStorageObj
             .bucket(bucketName)
             .file(file.name)
             .download({
