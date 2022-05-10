@@ -93,8 +93,8 @@ module.exports = class PackageUtils {
     bucketName,
     packageName,
     files,
-      dimension = "overview",
-      targetLocation = workingDir + packageName
+    dimension = "overview",
+    targetLocation = workingDir + packageName
   }) => {
     const downloadPromise = [];
     const cleanedArrayOfRequiredFileNames = [];
@@ -114,7 +114,6 @@ module.exports = class PackageUtils {
         cleanedArrayOfRequiredFileNames.push(file.name);
       }
     }
-
     await Promise.all(downloadPromise);
     return cleanedArrayOfRequiredFileNames;
   };

@@ -45,7 +45,7 @@ module.exports = class GooglePlayStoreStatsViewer {
       await this.packageUtils.createAuthenticatedStorageObject({keyPath: this.inputParamsModel.keyFilePath, projectID: this.inputParamsModel.projectID});
 
       if (!this.files || this.files.length < 1)
-      this.files = await this.packageUtils.getCorrectFiles({buketName: this.inputParamsModel.bucketName, packageName: this.inputParamsModel.packageName})
+       [this.files] = await this.packageUtils.getCorrectFiles({buketName: this.inputParamsModel.bucketName, packageName: this.inputParamsModel.packageName})
 
       //Create working dir, if not exist
       if (
@@ -60,14 +60,15 @@ module.exports = class GooglePlayStoreStatsViewer {
           }
         );
 
+
       //downloads all required csv files - overview files,
       //Other possible files can be https://support.google.com/googleplay/android-developer/?p=stats_export ,
       //check "Commands and file formats for aggregated reports"
       const cleanedArrayOfFileNames = await this.packageUtils.downloadCsvFiles(
         {
-          files: this.files,
+          bucketName: this.inputParamsModel.bucketName,
           packageName: this.inputParamsModel.packageName,
-          bucketName: this.inputParamsModel.bucketName
+          files: this.files
         }
       );
 
@@ -84,11 +85,14 @@ module.exports = class GooglePlayStoreStatsViewer {
   async downloadAppStats({dimension, targetLocation}) {
 
     try {
-      await this.packageUtils.createAuthenticatedStorageObject({keyPath: this.inputParamsModel.keyFilePath, projectID: this.inputParamsModel.projectID});
+      await this.packageUtils.createAuthenticatedStorageObject({
+        keyPath: this.inputParamsModel.keyFilePath,
+        projectID: this.inputParamsModel.projectID
+      });
 
       //Get files first
       if (!this.files || this.files.length < 1)
-        this.files = await this.packageUtils.getCorrectFiles({
+        [this.files] = await this.packageUtils.getCorrectFiles({
           buketName: this.inputParamsModel.bucketName,
           packageName: this.inputParamsModel.packageName
         })
