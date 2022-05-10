@@ -102,6 +102,8 @@ Output (sample)
 }
 ```
 
+> You can use statsViewer.setPackageName(STRING) -> Update packageID to query stats for different apps associated with same developer account. (and you have the permission)
+
 ## Use cases
 
 What are the possible usage of this package?
