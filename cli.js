@@ -33,8 +33,8 @@ const options = {
   packageName: argv.packageName
 };
 
-const Core = require("./index");
-new Core.GooglePlayStoreStatsViewer(options)
+const GooglePlayStoreStatsViewer = require("./index");
+new GooglePlayStoreStatsViewer(options)
   .getAppStats()
   .catch(err => {
     console.error(err);

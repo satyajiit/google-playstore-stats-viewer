@@ -1,10 +1,10 @@
 const fs = require("fs");
 const util = require("util");
 const readFilePromise = util.promisify(fs.readFile);
-const InputParamsModel = require("models/InputParamsModel");
-const packageUtils = require("package_utils");
+const InputParamsModel = require("./models/InputParamsModel");
+const PackageUtils = require("./package_utils");
 
-export class GooglePlayStoreStatsViewer {
+module.exports = class GooglePlayStoreStatsViewer {
   /**
    *
    * @param keyFilePath - Path to service account json file
@@ -27,6 +27,7 @@ export class GooglePlayStoreStatsViewer {
       projectID,
       bucketName
     });
+    this.packageUtils = new PackageUtils();
   }
 
   async createAuthenticatedStorageObject() {
@@ -34,7 +35,7 @@ export class GooglePlayStoreStatsViewer {
     const keyFile = JSON.parse(
       await readFilePromise(this.inputParamsModel.keyFilePath)
     );
-    this.authenticatedStorageObj = packageUtils.getAuthenticatedStorage(
+    this.authenticatedStorageObj = this.packageUtils.getAuthenticatedStorage(
       keyFile,
       this.inputParamsModel.projectID
     );
@@ -47,7 +48,6 @@ export class GooglePlayStoreStatsViewer {
 
   async getAppStats() {
     await this.createAuthenticatedStorageObject();
-
     try {
       const [files] = await this.authenticatedStorageObj
         .bucket(this.inputParamsModel.bucketName)
@@ -60,11 +60,11 @@ export class GooglePlayStoreStatsViewer {
       //Create working dir, if not exist
       if (
         !fs.existsSync(
-          packageUtils.workingDir + this.inputParamsModel.packageName
+          this.packageUtils.getWorkingDir() + this.inputParamsModel.packageName
         )
       )
         fs.mkdirSync(
-          packageUtils.workingDir + this.inputParamsModel.packageName,
+          this.packageUtils.getWorkingDir() + this.inputParamsModel.packageName,
           {
             recursive: true
           }
@@ -73,7 +73,7 @@ export class GooglePlayStoreStatsViewer {
       //downloads all required csv files - overview files,
       //Other possible files can be https://support.google.com/googleplay/android-developer/?p=stats_export ,
       //check "Commands and file formats for aggregated reports"
-      const cleanedArrayOfFileNames = await packageUtils.downloadOverviewCsvFiles(
+      const cleanedArrayOfFileNames = await this.packageUtils.downloadOverviewCsvFiles(
         {
           storage: this.authenticatedStorageObj,
           files: files,
@@ -82,7 +82,7 @@ export class GooglePlayStoreStatsViewer {
         }
       );
 
-      return packageUtils.findSumTotalOfValues({
+      return this.packageUtils.findSumTotalOfValues({
         cleanedArrayWithRequiredFileNames: cleanedArrayOfFileNames,
         packageName: this.inputParamsModel.packageName
       });
@@ -90,14 +90,14 @@ export class GooglePlayStoreStatsViewer {
       throw e;
     }
   }
-}
+};
 
 /**
  * @deprecated Since version 1.0.2 Will be deleted in version 1.0.5 Use class instead.
  *
  * Example code:
  * const gpsv = require("google-playstore-stats-viewer");
- * const GooglePlayStoreStatsViewer statsViewer = gpsv.GooglePlayStoreStatsViewer({
+ * const statsViewer = gpsv.GooglePlayStoreStatsViewer({
  *         keyFilePath: "PATH_TO_KEY_FILE",
  *         packageName: "com.example.app",
  *         projectID: "GCP_PROJECT_ID",
