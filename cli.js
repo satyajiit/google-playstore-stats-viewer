@@ -32,9 +32,8 @@ const options = {
     packageName: argv.packageName
 };
 
-const statsViewer = require('./index');
-
-statsViewer.appBasicStats(options).catch(err => {
+const Core = require('./index');
+new Core.GooglePlayStoreStatsViewer(options).getAppStats().catch(err => {
     console.error(err);
     process.exit(1);
 }).then(obj => console.log(obj));
