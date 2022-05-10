@@ -1,12 +1,10 @@
 const fs = require("fs");
 const util = require("util");
 const readFilePromise = util.promisify(fs.readFile);
-const workingDir = "tempCsvFiles/";
-const InputParamsModel = require('models/InputParamsModel')
-const packageUtils = require('package_utils')
+const InputParamsModel = require("models/InputParamsModel");
+const packageUtils = require("package_utils");
 
 export class GooglePlayStoreStatsViewer {
-
   /**
    *
    * @param keyFilePath - Path to service account json file
@@ -22,55 +20,77 @@ export class GooglePlayStoreStatsViewer {
    * use the value "pubsite_prod_xxxxxxx"
    *
    */
-  async constructor({keyFilePath, packageName, projectID, bucketName}) {
-    this.inputParamsModel = new InputParamsModel({keyFilePath, packageName, projectID, bucketName});
-    await this.createAuthenticatedStorageObject();
+  constructor({ keyFilePath, packageName, projectID, bucketName }) {
+    this.inputParamsModel = new InputParamsModel({
+      keyFilePath,
+      packageName,
+      projectID,
+      bucketName
+    });
   }
 
   async createAuthenticatedStorageObject() {
-    const keyFile = JSON.parse(await readFilePromise(this.inputParamsModel.keyFilePath));
-    this.authenticatedStorageObj = packageUtils.getAuthenticatedStorage(keyFile, this.inputParamsModel.projectID);
+    if (this.authenticatedStorageObj) return; //Ignore if already initialised.
+    const keyFile = JSON.parse(
+      await readFilePromise(this.inputParamsModel.keyFilePath)
+    );
+    this.authenticatedStorageObj = packageUtils.getAuthenticatedStorage(
+      keyFile,
+      this.inputParamsModel.projectID
+    );
   }
 
   //change/update package name, subsequent calls will use the new packageID
-  setPackageName({packageName}) {
-    this.inputParamsModel.packageName = packageName
+  setPackageName({ packageName }) {
+    this.inputParamsModel.packageName = packageName;
   }
 
   async getAppStats() {
+    await this.createAuthenticatedStorageObject();
 
     try {
-      const [files] = await this.authenticatedStorageObj.bucket(this.inputParamsModel.bucketName).getFiles({
-        prefix: `stats/installs/installs_${this.inputParamsModel.packageName}_`
-      });
+      const [files] = await this.authenticatedStorageObj
+        .bucket(this.inputParamsModel.bucketName)
+        .getFiles({
+          prefix: `stats/installs/installs_${
+            this.inputParamsModel.packageName
+          }_`
+        });
 
       //Create working dir, if not exist
-      if (!fs.existsSync(workingDir + this.inputParamsModel.packageName))
-        fs.mkdirSync(workingDir + this.inputParamsModel.packageName, {recursive: true});
+      if (
+        !fs.existsSync(
+          packageUtils.workingDir + this.inputParamsModel.packageName
+        )
+      )
+        fs.mkdirSync(
+          packageUtils.workingDir + this.inputParamsModel.packageName,
+          {
+            recursive: true
+          }
+        );
 
       //downloads all required csv files - overview files,
       //Other possible files can be https://support.google.com/googleplay/android-developer/?p=stats_export ,
       //check "Commands and file formats for aggregated reports"
-      const cleanedArrayOfFileNames = await packageUtils.downloadOverviewCsvFiles({
-        storage: this.authenticatedStorageObj,
-        files: files,
-        packageName: this.inputParamsModel.packageName,
-        bucketName: this.inputParamsModel.bucketName
-      });
+      const cleanedArrayOfFileNames = await packageUtils.downloadOverviewCsvFiles(
+        {
+          storage: this.authenticatedStorageObj,
+          files: files,
+          packageName: this.inputParamsModel.packageName,
+          bucketName: this.inputParamsModel.bucketName
+        }
+      );
 
       return packageUtils.findSumTotalOfValues({
         cleanedArrayWithRequiredFileNames: cleanedArrayOfFileNames,
         packageName: this.inputParamsModel.packageName
       });
     } catch (e) {
-      throw e
+      throw e;
     }
-
-
   }
-
 }
-
 
 /**
  * @deprecated Since version 1.0.2 Will be deleted in version 1.0.5 Use class instead.
@@ -89,10 +109,15 @@ export class GooglePlayStoreStatsViewer {
  *
  */
 exports.appBasicStats = async ({
-                                 keyFilePath,
-                                 packageName,
-                                 projectID,
-                                 bucketName
-                               }) => {
-  return new GooglePlayStoreStatsViewer({ keyFilePath, packageName, projectID, bucketName }).getAppStats();
+  keyFilePath,
+  packageName,
+  projectID,
+  bucketName
+}) => {
+  return new GooglePlayStoreStatsViewer({
+    keyFilePath,
+    packageName,
+    projectID,
+    bucketName
+  }).getAppStats();
 };
