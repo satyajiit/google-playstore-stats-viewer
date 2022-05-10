@@ -81,7 +81,12 @@ module.exports = class GooglePlayStoreStatsViewer {
     }
   }
 
-
+  /**
+   *
+   * @param dimension - can be one of the value from "dimensions"
+   * @param targetLocation - Target directory, where the files will be downloaded
+   * @returns {Promise<*>}
+   */
   async downloadAppStats({dimension, targetLocation}) {
 
     try {

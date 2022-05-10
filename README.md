@@ -45,7 +45,7 @@ Steps to find bucket name
 
 - Go to your play console
 - Navigate to Download reports -> Statistics 
-- Click "Copy cloud storage URI , Example: gs://pubsite_prod_xxxxx/stats/installs/"
+- Click "Copy cloud storage URI" , Example: gs://pubsite_prod_xxxxx/stats/installs/
 - Use only "pubsite_prod_xxxxx" as the bucket name
 
 ## Install
@@ -62,7 +62,7 @@ yarn global add google-playstore-stats-viewer
 
 ## Usage
 
-Using the CLI
+Using the CLI - (Get basic stats) 
 
 ```bash
 playstore-stats \
@@ -72,7 +72,7 @@ playstore-stats \
     -b=pubsite_prod_xxxx
 ```
 
-or the JavaScript API to fetch stats
+or the JavaScript API to fetch stats (Get basic stats)
 
 ```javascript
 const GooglePlayStoreStatsViewer = require('google-playstore-stats-viewer');
@@ -107,6 +107,36 @@ Output (sample)
 ```javascript
 statsViewer.setPackageName("com.newpackage.app")
 ```
+
+To download csv files - Statistics (Installs)
+
+```javascript
+try {
+    const statsViewer = new GooglePlayStoreStatsViewer({
+        keyFilePath: "PATH_TO_KEY_FILE",
+        packageName: "com.example.app",
+        projectID: "GCP_PROJECT_ID",
+        bucketName: "pubsite_prod_xxxx"})
+    const data = await statsViewer.downloadAppStats({
+        statsViewer.Dimensions.<DIMENSION_NAME>,
+        targetLocation
+    });
+    console.log(data);
+} catch (e) {
+  console.log(e);
+}
+```
+
+where dimension name can be any of the following:
+
+| **DIMENSION NAME** 	| **USE**               	|
+|--------------------	|-----------------------	|
+| DEVICE             	| Device wise installs  	|
+| APP_VERSION        	| Version wise installs 	|
+| CARRIER            	| Carrier wise installs 	|
+| COUNTRY            	| Country wise installs 	|
+| LANGUAGE           	| Language wise         	|
+| ANDROID_OS_VERSION 	| OS version wise       	|
 
 ## Use cases
 
