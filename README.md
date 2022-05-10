@@ -102,7 +102,11 @@ Output (sample)
 }
 ```
 
-> You can use statsViewer.setPackageName(STRING) -> Update packageID to query stats for different apps associated with same developer account. (and you have the permission)
+> You can use setPackageName(STRING) -> Update packageID to query stats for different apps associated with same developer account. (and you have the permission)
+
+```javascript
+statsViewer.setPackageName("com.newpackage.app")
+```
 
 ## Use cases
 
