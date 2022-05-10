@@ -110,6 +110,8 @@ statsViewer.setPackageName("com.newpackage.app")
 
 To download csv files - Statistics (Installs)
 
+returns a promise, which resolves to an array containing downloaded file names.
+
 ```javascript
 try {
     const statsViewer = new GooglePlayStoreStatsViewer({
@@ -118,8 +120,8 @@ try {
         projectID: "GCP_PROJECT_ID",
         bucketName: "pubsite_prod_xxxx"})
     const data = await statsViewer.downloadAppStats({
-        statsViewer.Dimensions.<DIMENSION_NAME>,
-        targetLocation
+        dimension: statsViewer.Dimensions.<DIMENSION_NAME>,
+        targetLocation: targetLocation
     });
     console.log(data);
 } catch (e) {
