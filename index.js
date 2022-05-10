@@ -1,7 +1,7 @@
 const fs = require("fs");
-const util = require("util");
 const InputParamsModel = require("./models/InputParamsModel");
 const PackageUtils = require("./package_utils");
+const Dimensions = require("./enums/Dimensions")
 
 module.exports = class GooglePlayStoreStatsViewer {
   /**
@@ -27,6 +27,12 @@ module.exports = class GooglePlayStoreStatsViewer {
       bucketName
     });
     this.packageUtils = new PackageUtils();
+
+    //used to query data based on specific dimension parameters like app_version, language etc
+    //For more: https://support.google.com/googleplay/android-developer/?p=stats_export , check "supported dimensions"
+    //This is just being used as a ENUM , lol
+    this.Dimensions = Dimensions;
+
   }
 
   //change/update package name, subsequent calls will use the new packageID
@@ -35,15 +41,11 @@ module.exports = class GooglePlayStoreStatsViewer {
   }
 
   async getAppStats() {
-    this.authenticatedStorageObj = await this.packageUtils.createAuthenticatedStorageObject({keyPath: this.inputParamsModel.keyFilePath, projectID: this.inputParamsModel.projectID});
     try {
-      const [files] = await this.authenticatedStorageObj
-        .bucket(this.inputParamsModel.bucketName)
-        .getFiles({
-          prefix: `stats/installs/installs_${
-            this.inputParamsModel.packageName
-          }_`
-        });
+      await this.packageUtils.createAuthenticatedStorageObject({keyPath: this.inputParamsModel.keyFilePath, projectID: this.inputParamsModel.projectID});
+
+      if (!this.files || this.files.length < 1)
+      this.files = await this.packageUtils.getCorrectFiles({buketName: this.inputParamsModel.bucketName, packageName: this.inputParamsModel.packageName})
 
       //Create working dir, if not exist
       if (
@@ -61,9 +63,9 @@ module.exports = class GooglePlayStoreStatsViewer {
       //downloads all required csv files - overview files,
       //Other possible files can be https://support.google.com/googleplay/android-developer/?p=stats_export ,
       //check "Commands and file formats for aggregated reports"
-      const cleanedArrayOfFileNames = await this.packageUtils.downloadOverviewCsvFiles(
+      const cleanedArrayOfFileNames = await this.packageUtils.downloadCsvFiles(
         {
-          files: files,
+          files: this.files,
           packageName: this.inputParamsModel.packageName,
           bucketName: this.inputParamsModel.bucketName
         }
@@ -77,7 +79,50 @@ module.exports = class GooglePlayStoreStatsViewer {
       throw e;
     }
   }
+
+
+  async downloadAppStats({dimension, targetLocation}) {
+
+    try {
+      await this.packageUtils.createAuthenticatedStorageObject({keyPath: this.inputParamsModel.keyFilePath, projectID: this.inputParamsModel.projectID});
+
+      //Get files first
+      if (!this.files || this.files.length < 1)
+        this.files = await this.packageUtils.getCorrectFiles({
+          buketName: this.inputParamsModel.bucketName,
+          packageName: this.inputParamsModel.packageName
+        })
+
+      //Create working dir, if not exist
+      if (
+          !fs.existsSync(
+              targetLocation + "/" + this.inputParamsModel.packageName
+          )
+      )
+        fs.mkdirSync(
+            targetLocation + "/" + this.inputParamsModel.packageName,
+            {
+              recursive: true
+            }
+        );
+
+      return await this.packageUtils.downloadCsvFiles(
+          {
+            files: this.files,
+            packageName: this.inputParamsModel.packageName,
+            bucketName: this.inputParamsModel.bucketName,
+            dimension: dimension,
+            targetLocation: targetLocation + "/" + this.inputParamsModel.packageName
+          }
+      );
+    } catch (e) {
+      throw e
+    }
+
+  }
+
 };
+
 
 /**
  * @deprecated Since version 1.0.2 Will be deleted in version 1.0.5 Use class instead.

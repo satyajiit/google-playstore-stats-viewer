@@ -9,7 +9,7 @@ const readFilePromise = util.promisify(fs.readFile);
 module.exports = class PackageUtils {
 
     async createAuthenticatedStorageObject({keyPath, projectID}) {
-        if (this.authenticatedStorageObj) return this.authenticatedStorageObj; //Ignore if already initialised.
+        if (this.authenticatedStorageObj) return; //Ignore if already initialised.
         const keyFile = JSON.parse(
             await readFilePromise(keyPath)
         );
@@ -81,24 +81,34 @@ module.exports = class PackageUtils {
 
   getWorkingDir = () => workingDir;
 
-  downloadOverviewCsvFiles = async ({
+  getCorrectFiles = ({buketName, packageName, type = "installs"}) => this.authenticatedStorageObj
+      .bucket(buketName)
+      .getFiles({
+          prefix: `stats/${type}/${type}_${
+              packageName
+          }_`
+      });
+
+  downloadCsvFiles = async ({
     bucketName,
     packageName,
-    files
+    files,
+      dimension = "overview",
+      targetLocation = workingDir + packageName
   }) => {
     const downloadPromise = [];
     const cleanedArrayOfRequiredFileNames = [];
 
     for (let i = 0; i < files.length; i++) {
       let file = files[i];
-      if (file.name.endsWith("_overview.csv")) {
+      if (file.name && file.name.endsWith(`_${dimension}.csv`)) {
         downloadPromise.push(
           this.authenticatedStorageObj
             .bucket(bucketName)
             .file(file.name)
             .download({
               destination:
-                workingDir + packageName + getLocalFileName(file.name)
+                targetLocation + getLocalFileName(file.name)
             })
         );
         cleanedArrayOfRequiredFileNames.push(file.name);
