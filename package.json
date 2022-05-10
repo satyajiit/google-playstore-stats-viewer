@@ -1,6 +1,6 @@
 {
   "name": "google-playstore-stats-viewer",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "View your app basic statistics like installs, uninstalls and other basic events -> https://support.google.com/googleplay/android-developer/?p=stats_export",
   "main": "index.js",
   "scripts": {

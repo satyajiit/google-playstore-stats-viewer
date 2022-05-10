@@ -96,8 +96,8 @@ module.exports = class GooglePlayStoreStatsViewer {
  * @deprecated Since version 1.0.2 Will be deleted in version 1.0.5 Use class instead.
  *
  * Example code:
- * const gpsv = require("google-playstore-stats-viewer");
- * const statsViewer = gpsv.GooglePlayStoreStatsViewer({
+ * const GooglePlayStoreStatsViewer = require("google-playstore-stats-viewer");
+ * const statsViewer = new GooglePlayStoreStatsViewer({
  *         keyFilePath: "PATH_TO_KEY_FILE",
  *         packageName: "com.example.app",
  *         projectID: "GCP_PROJECT_ID",
