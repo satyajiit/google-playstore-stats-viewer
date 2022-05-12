@@ -122,6 +122,39 @@ module.exports = class GooglePlayStoreStatsViewer {
       throw e;
     }
   }
+  async getLatestOverviewCsv({ targetLocation = "temp" }) {
+    try {
+      await this.packageUtils.createAuthenticatedStorageObject({
+        keyPath: this.inputParamsModel.keyFilePath,
+        projectID: this.inputParamsModel.projectID
+      });
+
+      //Get files first
+      if (!this.files || this.files.length < 1)
+        [this.files] = await this.packageUtils.getCorrectFiles({
+          buketName: this.inputParamsModel.bucketName,
+          packageName: this.inputParamsModel.packageName
+        });
+
+      //Create working dir, if not exist
+      if (
+          !fs.existsSync(targetLocation + "/" + this.inputParamsModel.packageName)
+      )
+        fs.mkdirSync(targetLocation + "/" + this.inputParamsModel.packageName, {
+          recursive: true
+        });
+
+      return await this.packageUtils.downloadLastOverviewCsvFile({
+        files: this.files,
+        packageName: this.inputParamsModel.packageName,
+        bucketName: this.inputParamsModel.bucketName,
+        dimension: dimension,
+        targetLocation: targetLocation + "/" + this.inputParamsModel.packageName
+      });
+    } catch (e) {
+      throw e;
+    }
+  }
 };
 
 /**

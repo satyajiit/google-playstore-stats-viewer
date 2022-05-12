@@ -111,6 +111,35 @@ module.exports = class PackageUtils {
     return cleanedArrayOfRequiredFileNames;
   };
 
+  downloadLastOverviewCsvFile = async ({
+                              bucketName,
+                              packageName,
+                              files,
+                              dimension = "overview",
+                              targetLocation = workingDir + packageName
+                            }) => {
+    const downloadPromise = [];
+    const cleanedArrayOfRequiredFileNames = [];
+
+    for (let i = files.length - 1; i >= 0; i--) {
+      let file = files[i];
+      if (file.name && file.name.endsWith(`_${dimension}.csv`)) {
+        downloadPromise.push(
+            this.authenticatedStorageObj
+                .bucket(bucketName)
+                .file(file.name)
+                .download({
+                  destination: targetLocation + getLocalFileName(file.name)
+                })
+        );
+        cleanedArrayOfRequiredFileNames.push(file.name);
+        break;
+      }
+    }
+    await Promise.all(downloadPromise);
+    return cleanedArrayOfRequiredFileNames;
+  };
+
   getTotals = fileName => {
     return new Promise((resolve, reject) => {
       let {
