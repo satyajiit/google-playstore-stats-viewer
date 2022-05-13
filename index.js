@@ -148,7 +148,7 @@ module.exports = class GooglePlayStoreStatsViewer {
         files: this.files,
         packageName: this.inputParamsModel.packageName,
         bucketName: this.inputParamsModel.bucketName,
-        dimension: dimension,
+        dimension: "overview",
         targetLocation: targetLocation + "/" + this.inputParamsModel.packageName
       });
     } catch (e) {
